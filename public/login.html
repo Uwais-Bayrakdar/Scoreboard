@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <input type="text" placeholder="enter your name" id="name" required>
+        <input type="password" placeholder="enter your password" id="password" required>
+        <button id="log-in-btn">Log In</button>
+    </div>
+    <script>
+        const nameInput = document.getElementById("name");
+        const passwordInput = document.getElementById("password");
+        const logInBtn = document.getElementById("log-in-btn");
+
+        logInBtn.addEventListener("click",async () => {
+            const username = nameInput.value.trim().toLowerCase();
+            const password = passwordInput.value;
+
+            try {
+                const res = await fetch('/login', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                })
+
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    alert("Welcome back Admin.");
+                    window.location.href = "board.html";
+                } else {
+                    alert("Login failed.");
+                    nameInput.value = "";
+                    passwordInput.value = "";
+                }
+            } catch (e) {
+                console.log("Login error:", e);
+            }
+        })
+    </script>
+</body>
+</html>

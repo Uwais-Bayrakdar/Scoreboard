@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Score Board</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <button type="button" id="show-user-list-btn">Show User List</button>
+        <ul id="user-list">
+
+        </ul>
+    </div>
+    <script>
+        const userList = document.getElementById("user-list");
+        const showUserListBtn = document.getElementById("show-user-list-btn");
+
+        showUserListBtn.addEventListener("click", async () => {
+            try {
+                const res = await fetch('/api/userlist');
+                const data = await res.json();
+
+                userList.innerHTML = ''; 
+
+                data.users.forEach(user => {
+                    const li = document.createElement("li");
+                    li.textContent = `${user.username} - ${user.score}`;
+                    userList.appendChild(li);
+                });
+            } catch (err) {
+                console.log("Error showing user list:", err);
+            }
+        });
+    </script>
+</body>
+</html>

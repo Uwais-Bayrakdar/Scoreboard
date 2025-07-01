@@ -1,0 +1,108 @@
+/* General page styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f1f1f1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container for login form */
+.container {
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Login inputs */
+.container input,
+form input {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 12px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+/* Buttons */
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #0077cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #005fa3;
+}
+
+.btns {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+}
+
+/* Score board form */
+form {
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    width: 300px;
+}
+
+/* User list */
+#user-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    width: 300px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+#user-list li {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#user-list li:last-child {
+    border-bottom: none;
+}
+
+/* Delete all button */
+#delete-all-btn {
+    background-color: #cc0000;
+    margin-top: 20px;
+    width: 300px;
+}
+
+#delete-all-btn:hover {
+    background-color: #a50000;
+}
+
+.del-btn, .edit-btn {
+    background-color: #eee;
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    padding: 0;
+}

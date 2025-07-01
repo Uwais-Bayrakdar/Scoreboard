@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Score Board</title>
+</head>
+
+<body>
+    <form id="form">
+        <input type="text" placeholder="username" id="username" name="username">
+        <input type="number" placeholder="user score" id="user-score" name="user-score">
+        <div class="btns"><button type="submit">Add User</button><button type="button" id="show-user-list-btn">Show User
+                List</button></div>
+    </form>
+    <ul id="user-list">
+
+    </ul>
+    <button id="delete-all-btn">Delete All Users</button>
+    <script>
+        const form = document.getElementById("form");
+        const username = document.getElementById("username");
+        const userScore = document.getElementById("user-score");
+        const userList = document.getElementById("user-list");
+        const showUserListBtn = document.getElementById("show-user-list-btn");
+        const deleteAllBtn = document.getElementById("delete-all-btn");
+
+        function createUserListItem(user) {
+            const li = document.createElement('li');
+            li.setAttribute("data-id", user._id);
+            li.setAttribute("data-username", user.username);
+
+            const userSpan = document.createElement("span");
+            userSpan.textContent = `${user.username} - ${user.score}`;
+
+            const adminBtns = document.createElement("div");
+            adminBtns.classList.add("admin-btns");
+
+            const delBtn = document.createElement("button");
+            delBtn.classList.add("del-btn");
+            delBtn.textContent = "❌";
+
+            const editBtn = document.createElement("button");
+            editBtn.classList.add("edit-btn");
+            editBtn.textContent = "✏️";
+
+            adminBtns.appendChild(editBtn);
+            adminBtns.appendChild(delBtn);
+            li.appendChild(userSpan);
+            li.appendChild(adminBtns);
+
+            return li;
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const usernameVal = username.value.trim();
+            const userScoreVal = userScore.value.trim();
+
+            try {
+                const res = await fetch('/api/userlist', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username: usernameVal, userScore: userScoreVal })
+                });
+
+                if (!res.ok) {
+                    console.log("Response wasn't ok");
+                    return;
+                }
+
+                const data = await res.json();
+                const user = data.user;
+
+                username.value = "";
+                userScore.value = "";
+
+                const li = createUserListItem({
+                    _id: user._id || new Date().toISOString(), // fallback if _id is missing
+                    username: usernameVal,
+                    score: userScoreVal
+                });
+
+                userList.appendChild(li);
+
+            } catch (e) {
+                console.log("Form submit error:", e);
+            }
+        }
+
+        async function handleShowUserList() {
+            try {
+                const res = await fetch('/api/userlist');
+                const data = await res.json();
+
+                userList.innerHTML = '';
+
+                data.users.forEach(user => {
+                    const li = createUserListItem(user);
+                    userList.appendChild(li);
+                });
+            } catch (err) {
+                console.log("Error showing user list:", err);
+            }
+        }
+
+        async function handleDeleteAllUsers() {
+            try {
+                const res = await fetch('/api/userlist', {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                const data = await res.json();
+                userList.innerHTML = "";
+            } catch (e) {
+                console.log("Error in deleteAllBtn:", e);
+            }
+        }
+
+        async function handleUserListClick(e) {
+            const target = e.target;
+
+            const parentLi = target.closest("li");
+            if (!parentLi) return;
+
+            const userId = parentLi.getAttribute("data-id");
+            const usernameVal = parentLi.getAttribute("data-username");
+
+            if (!userId) return;
+
+            if (target.classList.contains("del-btn")) {
+                try {
+                    const res = await fetch(`/api/userlist/${encodeURIComponent(usernameVal)}`, {
+                        method: "DELETE"
+                    });
+
+                    if (res.ok) parentLi.remove();
+                } catch (e) {
+                    console.log("Delete user error:", e);
+                }
+            }
+
+            if (target.classList.contains("edit-btn")) {
+                const newUsername = prompt("Enter new username:", usernameVal);
+                const newScore = prompt("Enter new score:");
+
+                if (!newUsername || !newScore) return;
+
+                try {
+                    const res = await fetch(`/api/userlist/${userId}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ newUsername, newUserScore: newScore })
+                    });
+
+                    if (res.ok) {
+                        const updatedLi = createUserListItem({
+                            _id: userId,
+                            username: newUsername,
+                            score: newScore
+                        });
+
+                        userList.replaceChild(updatedLi, parentLi);
+                        console.log("replaced Li");
+                    }
+                } catch (e) {
+                    console.log("Edit user error:", e);
+                }
+            }
+        }
+
+        form.addEventListener("submit", handleFormSubmit);
+        showUserListBtn.addEventListener("click", handleShowUserList);
+        deleteAllBtn.addEventListener("dblclick", handleDeleteAllUsers);
+        userList.addEventListener("click", handleUserListClick);
+    </script>
+</body>
+
+</html>
