@@ -2,7 +2,13 @@ const express = require('express');
 const path = require('path');
 const RouteApi = require("./routes/ROUTEApi");
 const {connectDB} = require('./db/userDB');
+const cors = require('cors');
 
+// Allow requests from your GitHub Pages domain
+app.use(cors({
+  origin: ['https://uwais-bayrakdar.github.io', 'http://localhost:3000'], // Add localhost for development
+  credentials: true
+}));
 connectDB();
 
 const app = express();
