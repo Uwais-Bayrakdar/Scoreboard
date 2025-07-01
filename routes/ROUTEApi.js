@@ -7,14 +7,7 @@ require('dotenv').config();
 const admin_username = process.env.ADMIN_USERNAME;
 const admin_password = process.env.ADMIN_PASSWORD;
 
-//middleware
-const requireLogIn = (req, res, next) => {
-    if (req.session && req.session.user) {
-        next();
-    } else {
-        res.status(401).send("Unauthorized");
-    }
-}
+
 
 Router.post("/login", (req, res) => {
     const { username, password } = req.body;
@@ -27,7 +20,7 @@ Router.post("/login", (req, res) => {
     res.status(401).json({ success: false, message: "Unauthorized" });
 });
 
-Router.post('/userlist',requireLogIn ,async (req, res) => {
+Router.post('/userlist', async (req, res) => {
     const {username, userScore} = req.body;
 
     if (!username || !userScore) {
@@ -49,7 +42,7 @@ Router.post('/userlist',requireLogIn ,async (req, res) => {
     }
 })
 
-Router.get('/userlist', requireLogIn,async (req, res) => {
+Router.get('/userlist', async (req, res) => {
     try {
         const users = await getAllUsers();
         res.status(201).json({success: true, users}); 
@@ -59,7 +52,7 @@ Router.get('/userlist', requireLogIn,async (req, res) => {
     }
 })
 
-Router.put('/userlist/:id',requireLogIn ,async (req, res) => {
+Router.put('/userlist/:id', async (req, res) => {
     try {
         const {newUsername, newUserScore} = req.body;
         const id = req.params.id;
@@ -70,7 +63,7 @@ Router.put('/userlist/:id',requireLogIn ,async (req, res) => {
     }
 })
 
-Router.delete('/userlist',requireLogIn ,async (req, res) => {
+Router.delete('/userlist', async (req, res) => {
     try {
         await deleteAllUsers();
         res.status(201).json({success: true, message: "All users deleted"});
@@ -80,7 +73,7 @@ Router.delete('/userlist',requireLogIn ,async (req, res) => {
     }
 })
 
-Router.delete('/userlist/:username',requireLogIn, async (req, res) => {
+Router.delete('/userlist/:username', async (req, res) => {
     const {username} = req.params;
 
     if (!username) {
@@ -96,7 +89,7 @@ Router.delete('/userlist/:username',requireLogIn, async (req, res) => {
     }
 })
 
-Router.get('/board.html', requireLogIn ,(req, res) => {
+Router.get('/board.html',(req, res) => {
     res.sendFile(path.join(__dirname, "public", "board.html"));
 })
 
