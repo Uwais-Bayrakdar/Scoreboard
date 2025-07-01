@@ -19,7 +19,7 @@
 
         showUserListBtn.addEventListener("click", async () => {
             try {
-                const res = await fetch('/api/userlist');
+                const res = await fetch('scoreboard-production-55bc.up.railway.app/api/userlist');
                 const data = await res.json();
 
                 userList.innerHTML = ''; 
