@@ -1,53 +1,49 @@
-const {MongoClient} = require('mongodb');
-const {ObjectId} = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 require('dotenv').config();
 
-const mongo_uri = process.env.MONGO_URI;
-
-const uri = mongo_uri;
-const client = new MongoClient(uri);
-
-let users;
+let db;
 
 async function connectDB() {
-    try {
-        await client.connect();
-        const db = client.db("UserDB");
-        users = db.collection("users");
-
-    } catch (e) {
-        console.log("error in run function in db:", e);
-    }
+  const client = new MongoClient(process.env.MONGO_URI);
+  await client.connect();
+  db = client.db('scoreboard'); // change if needed
+  console.log("✅ Connected to MongoDB");
 }
 
-async function addUser(userName, userScore) {
-    return await users.insertOne({username: userName, score: userScore});
+function getCollection() {
+  return db.collection('users');
+}
+
+async function addUser(name, score) {
+  const collection = getCollection();
+  const result = await collection.insertOne({ name, score });
+  return result;
 }
 
 async function getAllUsers() {
-    return await users.find({}).toArray();
+  return await getCollection().find({}).toArray();
 }
 
-async function updateUser(id, newName, newScore) {
-    return await users.updateOne(
-        {_id: ObjectId.createFromHexString(id)},
-        {$set: {username: newName, score: newScore}}
-    );
+async function updateUser(id, name, score) {
+  return await getCollection().updateOne(
+    { _id: new ObjectId(id) },
+    { $set: { name, score } }
+  );
 }
 
 async function deleteUser(username) {
-    return await users.deleteOne({username: username});
+  return await getCollection().deleteOne({ name: username });
 }
 
 async function deleteAllUsers() {
-    return await users.deleteMany({});
+  return await getCollection().deleteMany({});
 }
 
 module.exports = {
-    connectDB,
-    addUser,
-    getAllUsers,
-    updateUser,
-    deleteUser,
-    deleteAllUsers
-}
+  connectDB,
+  addUser,
+  getAllUsers,
+  updateUser,
+  deleteUser,
+  deleteAllUsers
+};
