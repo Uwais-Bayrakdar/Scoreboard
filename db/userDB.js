@@ -13,7 +13,7 @@ async function connectDB() {
   });
 
   await client.connect();
-  db = client.db('scoreboard'); // replace with your DB name if different
+  db = client.db('ScoreTrackerDB'); // replace with your DB name if different
   console.log("✅ Connected to MongoDB");
 }
 
