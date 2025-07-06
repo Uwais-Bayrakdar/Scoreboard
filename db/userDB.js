@@ -3,12 +3,20 @@ require('dotenv').config();
 
 let db;
 
+
 async function connectDB() {
-  const client = new MongoClient(process.env.MONGO_URI);
+  const client = new MongoClient(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    tls: true, // 🔑 Critical for Render's TLS handshake
+    serverApi: '1' // Optional but can help with stable connection to Atlas
+  });
+
   await client.connect();
-  db = client.db('scoreboard'); // change if needed
+  db = client.db('scoreboard'); // replace with your DB name if different
   console.log("✅ Connected to MongoDB");
 }
+
 
 function getCollection() {
   return db.collection('users');
@@ -39,8 +47,13 @@ async function deleteAllUsers() {
   return await getCollection().deleteMany({});
 }
 
+async function getCollection() {
+  return db.collection('users');
+}
+
 module.exports = {
   connectDB,
+  getCollection,
   addUser,
   getAllUsers,
   updateUser,
