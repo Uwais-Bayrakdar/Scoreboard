@@ -8,6 +8,15 @@ const admin_username = process.env.ADMIN_USERNAME;
 const admin_password = process.env.ADMIN_PASSWORD;
 
 
+const port = process.env.PORT || 4000 
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
 
 Router.post("/login", (req, res) => {
     const { username, password } = req.body;
