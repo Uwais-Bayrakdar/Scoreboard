@@ -10,37 +10,23 @@ const {
 
 require('dotenv').config();
 
-const app = express();
-const Router = express.Router();
-const port = process.env.PORT || 4000;
+const router = express.Router();
 
 const admin_username = process.env.ADMIN_USERNAME;
 const admin_password = process.env.ADMIN_PASSWORD;
 
-// Middleware
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/', Router);
-
-// Base route
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
 // Routes
-Router.post("/login", (req, res) => {
+router.post("/login", (req, res) => {
   const { username, password } = req.body;
 
   if (username === admin_username && password === admin_password) {
-    // Assuming you're using sessions (if not, remove this line)
-    // req.session.user = { name: username };
     return res.json({ success: true });
   }
 
   res.status(401).json({ success: false, message: "Unauthorized" });
 });
 
-Router.post('/userlist', async (req, res) => {
+router.post('/userlist', async (req, res) => {
   const { username, userScore } = req.body;
 
   if (!username || !userScore) {
@@ -63,7 +49,7 @@ Router.post('/userlist', async (req, res) => {
   }
 });
 
-Router.get('/userlist', async (req, res) => {
+router.get('/userlist', async (req, res) => {
   try {
     const users = await getAllUsers();
     res.status(200).json({ success: true, users });
@@ -73,7 +59,7 @@ Router.get('/userlist', async (req, res) => {
   }
 });
 
-Router.put('/userlist/:id', async (req, res) => {
+router.put('/userlist/:id', async (req, res) => {
   try {
     const { newUsername, newUserScore } = req.body;
     const id = req.params.id;
@@ -85,7 +71,7 @@ Router.put('/userlist/:id', async (req, res) => {
   }
 });
 
-Router.delete('/userlist', async (req, res) => {
+router.delete('/userlist', async (req, res) => {
   try {
     await deleteAllUsers();
     res.status(200).json({ success: true, message: "All users deleted" });
@@ -96,7 +82,7 @@ Router.delete('/userlist', async (req, res) => {
   }
 });
 
-Router.delete('/userlist/:username', async (req, res) => {
+router.delete('/userlist/:username', async (req, res) => {
   const { username } = req.params;
 
   if (!username) {
@@ -113,11 +99,9 @@ Router.delete('/userlist/:username', async (req, res) => {
   }
 });
 
-Router.get('/board.html', (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "board.html"));
+router.get('/board.html', (req, res) => {
+  res.sendFile(path.join(__dirname, "../public", "board.html"));
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`✅ Server running on port ${port}`);
-});
+// ✅ Export only the router
+module.exports = router;
