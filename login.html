@@ -12,11 +12,11 @@
         <input type="password" placeholder="enter your password" id="password" required>
         <button id="log-in-btn">Log In</button>
     </div>
+    <script src="config.js"></script>
     <script>
         const nameInput = document.getElementById("name");
         const passwordInput = document.getElementById("password");
         const logInBtn = document.getElementById("log-in-btn");
-        const BASE_URL = "https://scoreboard-j736.onrender.com";
 
         logInBtn.addEventListener("click",async () => {
             const username = nameInput.value.trim().toLowerCase();

@@ -19,6 +19,7 @@
 
     </ul>
     <button id="delete-all-btn">Delete All Users</button>
+    <script src="config.js"></script>
     <script>
         const form = document.getElementById("form");
         const username = document.getElementById("username");
@@ -26,7 +27,6 @@
         const userList = document.getElementById("user-list");
         const showUserListBtn = document.getElementById("show-user-list-btn");
         const deleteAllBtn = document.getElementById("delete-all-btn");
-        const BASE_URL = "https://scoreboard-production-55bc.up.railway.app";
 
         function createUserListItem(user) {
             const li = document.createElement('li');
